@@ -143,7 +143,7 @@ namespace UnityEngine.XR.ARSubsystems
                 using (new ScopedProfiler("XRAnchorSubsystem.TryAddAnchorAsync"))
                 {
                     var wasSuccessful = TryAddAnchor(pose, out var anchor);
-                    return AwaitableUtils<Result<XRAnchor>>.FromResult(
+                    return AwaitableUtils<XRAnchor>.FromResult(
                         s_SynchronousCompletionSource, new Result<XRAnchor>(wasSuccessful, anchor));
                 }
             }

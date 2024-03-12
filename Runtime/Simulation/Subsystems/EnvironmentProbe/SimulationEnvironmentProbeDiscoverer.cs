@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.ARFoundation.InternalUtils;
 using UnityEngine.XR.ARSubsystems;
 using static UnityEngine.XR.Simulation.SimulationUtils;
 
@@ -74,7 +75,7 @@ namespace UnityEngine.XR.Simulation
             if (!string.IsNullOrEmpty(BaseSimulationSceneManager.activeSceneName) && !m_IsSceneInitialized)
                 OnEnvironmentSetupFinished();
 
-            var xrOrigin = Object.FindAnyObjectByType<XROrigin>();
+            var xrOrigin = FindObjectsUtility.FindAnyObjectByType<XROrigin>();
             m_OriginCameraData = new CameraData(xrOrigin.Camera);
             m_IsStarted = true;
         }
@@ -526,11 +527,15 @@ namespace UnityEngine.XR.Simulation
             /// If <see langword="true"/>, this is a user-added manual probe.
             /// If <see langword="false"/>, this is a probe defined in a scene.
             /// </param>
-            public ProbeData(SimulatedEnvironmentProbe probe, bool isManual) : this(probe, isManual, true) { }
+            public ProbeData(SimulatedEnvironmentProbe probe, bool isManual) : this(probe, isManual, true)
+            {
+            }
 
             /// <summary><see cref="ProbeData"/> constructor for scene-defined probes that already have preset cubemaps.</summary>
             /// <param name="probe">The <see cref="SimulatedEnvironmentProbe"/> to be tracked with this data.</param>
-            public ProbeData(SimulatedEnvironmentProbe probe) : this(probe, false, false) { }
+            public ProbeData(SimulatedEnvironmentProbe probe) : this(probe, false, false)
+            {
+            }
 
             public readonly void ResetChangeFlags()
             {
@@ -544,6 +549,11 @@ namespace UnityEngine.XR.Simulation
                     return;
 
                 Object.Destroy(m_SimProbe.cubemap);
+
+                if (isManual)
+                {
+                    Object.Destroy(m_SimProbe.gameObject);
+                }
             }
         }
     }

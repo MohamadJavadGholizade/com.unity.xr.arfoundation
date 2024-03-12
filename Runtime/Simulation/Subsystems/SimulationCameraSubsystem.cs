@@ -124,7 +124,7 @@ namespace UnityEngine.XR.Simulation
                 SimulationSubsystemAnalytics.SubsystemStarted(k_SubsystemId);
 #endif
 
-                var xrOrigin = Object.FindAnyObjectByType<XROrigin>();
+                var xrOrigin = FindObjectsUtility.FindAnyObjectByType<XROrigin>();
                 if (xrOrigin == null)
                 {
                     Debug.LogError("An XR Origin is required in the scene, none found.");

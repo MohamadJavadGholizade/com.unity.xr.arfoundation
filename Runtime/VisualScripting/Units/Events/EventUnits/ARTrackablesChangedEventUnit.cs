@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using Unity.XR.CoreUtils.Collections;
-using UnityEngine.XR.ARSubsystems;
 
 namespace UnityEngine.XR.ARFoundation.VisualScripting
 {
@@ -57,9 +55,9 @@ namespace UnityEngine.XR.ARFoundation.VisualScripting
         {
             base.Definition();
 
-            added = ValueOutput<ReadOnlyList<TTrackable>>(nameof(added));
-            updated = ValueOutput<ReadOnlyList<TTrackable>>(nameof(updated));
-            removed = ValueOutput<KeyValuePair<TrackableId, TTrackable>>(nameof(removed));
+            added = ValueOutput<IReadOnlyCollection<TTrackable>>(nameof(added));
+            updated = ValueOutput<IReadOnlyCollection<TTrackable>>(nameof(updated));
+            removed = ValueOutput<IReadOnlyCollection<TTrackable>>(nameof(removed));
         }
 
         /// <summary>

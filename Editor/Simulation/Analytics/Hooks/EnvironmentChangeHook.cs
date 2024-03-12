@@ -17,8 +17,8 @@ namespace UnityEditor.XR.Simulation
         static void OnEnvironmentChange()
         {
             AREditorAnalytics.simulationUIAnalyticsEvent.Send(
-                new SimulationUIAnalyticsEvent.EventPayload(
-                    eventName: SimulationUIAnalyticsEvent.Context.EnvironmentCycle,
+                new SimulationUIAnalyticsArgs(
+                    eventName: SimulationUIAnalyticsArgs.EventName.EnvironmentCycle,
                     environmentGuid: SimulationEnvironmentAssetsManager.GetActiveEnvironmentAssetGuid()));
         }
     }

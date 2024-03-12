@@ -6,8 +6,7 @@
         "Unity.XR.ARSubsystems",
         "Unity.XR.Management",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Unity.XR.CoreUtils"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

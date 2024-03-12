@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARFoundation.InternalUtils;
 
 namespace UnityEditor.XR.ARFoundation.Tests
 {
@@ -43,11 +44,11 @@ namespace UnityEditor.XR.ARFoundation.Tests
             Assert.IsNotNull(arSession);
 
             Undo.PerformUndo();
-            arSession = Object.FindAnyObjectByType<ARSession>();
+            arSession = FindObjectsUtility.FindAnyObjectByType<ARSession>();
             Assert.IsTrue(arSession == null);
 
             Undo.PerformRedo();
-            arSession = Object.FindAnyObjectByType<ARSession>();
+            arSession = FindObjectsUtility.FindAnyObjectByType<ARSession>();
             Assert.IsNotNull(arSession);
             Assert.AreEqual(parent, arSession.transform.parent);
             Object.DestroyImmediate(parent.gameObject);
@@ -113,17 +114,17 @@ namespace UnityEditor.XR.ARFoundation.Tests
             var debugMenu = SceneUtils.CreateARDebugMenuWithParent(null).GetComponent<ARDebugMenu>();
             Assert.IsNotNull(debugMenu);
             Undo.PerformUndo();
-            debugMenu = Object.FindAnyObjectByType<ARDebugMenu>();
+            debugMenu = FindObjectsUtility.FindAnyObjectByType<ARDebugMenu>();
             Assert.IsTrue(debugMenu == null); // using Unity's overload for the == operator
             Undo.PerformRedo();
-            debugMenu = Object.FindAnyObjectByType<ARDebugMenu>();
+            debugMenu = FindObjectsUtility.FindAnyObjectByType<ARDebugMenu>();
             Assert.IsNotNull(debugMenu);
             Object.DestroyImmediate(debugMenu);
         }
 
         static void DestroyAllGameObjects()
         {
-            foreach (var g in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            foreach (var g in FindObjectsUtility.FindObjectsByType<GameObject>())
             {
                 // Don't destroy GameObjects that are children within a Prefab instance
                 if (g == null || (PrefabUtility.IsPartOfAnyPrefab(g) && !PrefabUtility.IsAnyPrefabInstanceRoot(g)))

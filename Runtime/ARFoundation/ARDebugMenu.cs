@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using Unity.Collections;
 using Unity.XR.CoreUtils;
+using UnityEngine.XR.ARFoundation.InternalUtils;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.Management;
 
@@ -627,7 +628,7 @@ namespace UnityEngine.XR.ARFoundation
 
         void InitMenu()
         {
-            var eventSystem = FindAnyObjectByType<EventSystem>();
+            var eventSystem = FindObjectsUtility.FindAnyObjectByType<EventSystem>();
             if(eventSystem == null)
             {
                 Debug.LogError($"Failed to find EventSystem in current scene. As a result, this component will be disabled.");
@@ -635,7 +636,7 @@ namespace UnityEngine.XR.ARFoundation
                 return;
             }
 
-            var session = FindAnyObjectByType<ARSession>();
+            var session = FindObjectsUtility.FindAnyObjectByType<ARSession>();
             if(session == null)
             {
                 Debug.LogError($"Failed to find ARSession in current scene. As a result, this component will be disabled.");
@@ -644,7 +645,7 @@ namespace UnityEngine.XR.ARFoundation
             }
             m_Session = session;
 
-            var origin = FindAnyObjectByType<XROrigin>();
+            var origin = FindObjectsUtility.FindAnyObjectByType<XROrigin>();
             if(origin == null)
             {
                 Debug.LogError($"Failed to find XROrigin in current scene. As a result, this component will be disabled.");
@@ -653,7 +654,7 @@ namespace UnityEngine.XR.ARFoundation
             }
             m_Origin = origin;
 
-            var cameraManager = FindAnyObjectByType<ARCameraManager>();
+            var cameraManager = FindObjectsUtility.FindAnyObjectByType<ARCameraManager>();
             if(cameraManager == null)
             {
                 Debug.LogWarning($"Failed to find an ARCameraManager in current scene. As a result, the camera configuration menu will be disabled.");
@@ -791,32 +792,15 @@ namespace UnityEngine.XR.ARFoundation
 
         void DeregisterUIListeners()
         {
-            if (m_DisplayInfoMenuButton)
-                m_DisplayInfoMenuButton.onClick.RemoveAllListeners();
-            
-            if (m_DisplayConfigurationsMenuButton)
-                m_DisplayConfigurationsMenuButton.onClick.RemoveAllListeners();
+            m_DisplayInfoMenuButton.onClick.RemoveAllListeners();
+            m_DisplayConfigurationsMenuButton.onClick.RemoveAllListeners();
+            m_DisplayDebugOptionsMenuButton.onClick.RemoveAllListeners();
+            m_DisplayCameraConfigurationsMenuButton.onClick.RemoveAllListeners();
+            m_CameraConfigurationDropdown.onValueChanged.RemoveAllListeners();
 
-            if (m_DisplayDebugOptionsMenuButton)
-                m_DisplayDebugOptionsMenuButton.onClick.RemoveAllListeners();
-
-            if (m_DisplayCameraConfigurationsMenuButton)
-                m_DisplayCameraConfigurationsMenuButton.onClick.RemoveAllListeners();
-
-            if (m_CameraConfigurationDropdown)
-                m_CameraConfigurationDropdown.onValueChanged.RemoveAllListeners();
-
-            if (m_ShowOriginButton)
-                m_ShowOriginButton.onValueChanged.RemoveAllListeners();
-
-            if (m_ShowPlanesButton)
-                m_ShowPlanesButton.onValueChanged.RemoveAllListeners();
-
-            if (m_ShowAnchorsButton)
-                m_ShowAnchorsButton.onValueChanged.RemoveAllListeners();
-
-            if (m_ShowPointCloudsButton)
-                m_ShowPointCloudsButton.onValueChanged.RemoveAllListeners();
+            m_ShowPlanesButton.onValueChanged.RemoveAllListeners();
+            m_ShowAnchorsButton.onValueChanged.RemoveAllListeners();
+            m_ShowPointCloudsButton.onValueChanged.RemoveAllListeners();
         }
 
         void ShowMenu(GameObject menu)
@@ -1148,7 +1132,7 @@ namespace UnityEngine.XR.ARFoundation
                 UpdateLine(plane, lineRenderer);
             }
 
-            foreach(var (_, plane) in eventArgs.removed)
+            foreach(var plane in eventArgs.removed)
             {
                 if(m_PlaneLineRenderers.TryGetValue(plane, out var lineRenderer))
                 {
@@ -1175,7 +1159,7 @@ namespace UnityEngine.XR.ARFoundation
                 anchorPrefab.transform.SetPositionAndRotation(anchor.transform.position, anchor.transform.rotation);
             }
 
-            foreach(var (_ , anchor) in eventArgs.removed)
+            foreach(var anchor in eventArgs.removed)
             {
                 if(m_AnchorPrefabs.TryGetValue(anchor, out var anchorPrefab))
                 {
@@ -1200,7 +1184,7 @@ namespace UnityEngine.XR.ARFoundation
                 CreateOrUpdatePoints(pointCloud);
             }
 
-            foreach(var (_ , pointCloud) in eventArgs.removed)
+            foreach(var pointCloud in eventArgs.removed)
             {
                 RemovePoints(pointCloud);
             }

@@ -1,5 +1,6 @@
 using System;
 using Unity.XR.CoreUtils;
+using UnityEngine.XR.ARFoundation.InternalUtils;
 using UnityEngine.XR.ARSubsystems;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -57,7 +58,7 @@ namespace UnityEngine.XR.Simulation
 
                 SetupSimulation();
 
-                var xrOrigin = Object.FindAnyObjectByType<XROrigin>();
+                var xrOrigin = FindObjectsUtility.FindAnyObjectByType<XROrigin>();
 
                 if (xrOrigin == null)
                 {
@@ -129,6 +130,7 @@ namespace UnityEngine.XR.Simulation
                     s_SimulationSceneManager = null;
                 }
 
+                m_SessionId = Guid.Empty;
                 m_Initialized = false;
             }
 

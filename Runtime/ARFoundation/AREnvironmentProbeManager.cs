@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using UnityEngine;
 using UnityEngine.XR.ARSubsystems;
+
+using Object = UnityEngine.Object;
 
 namespace UnityEngine.XR.ARFoundation
 {
@@ -25,7 +29,7 @@ namespace UnityEngine.XR.ARFoundation
         /// If enabled, requests automatic generation of environment probes for the scene.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if automatic environment probe placement is requested. Otherwise, <see langword="false"/>.
+        /// <c>true</c> if automatic environment probe placement is requested. Otherwise, <c>false</c>.
         /// </value>
         public bool automaticPlacementRequested
         {
@@ -38,9 +42,9 @@ namespace UnityEngine.XR.ARFoundation
         }
 
         /// <summary>
-        /// <see langword="true"/> if automatic placement is enabled on the subsystem.
+        /// <c>true</c> if automatic placement is enabled on the subsystem.
         /// </summary>
-        public bool automaticPlacementEnabled => supportsAutomaticPlacement && subsystem.automaticPlacementEnabled;
+        public bool automaticPlacementEnabled => supportsAutomaticPlacement ? subsystem.automaticPlacementEnabled : false;
 
         [SerializeField]
         [Tooltip("Whether environment probes should be automatically placed in the environment (if supported).")]
@@ -50,14 +54,13 @@ namespace UnityEngine.XR.ARFoundation
         /// Specifies the texture filter mode to be used with the environment texture.
         /// </summary>
         /// <value>
-        /// The texture filter mode.
+        /// The texture filter mode to be used with the environment texture.
         /// </value>
         public FilterMode environmentTextureFilterMode
         {
             get => m_EnvironmentTextureFilterMode;
             set => m_EnvironmentTextureFilterMode = value;
         }
-
         [SerializeField]
         [Tooltip("The texture filter mode to be used with the reflection probe environment texture.")]
         FilterMode m_EnvironmentTextureFilterMode = FilterMode.Trilinear;
@@ -71,9 +74,7 @@ namespace UnityEngine.XR.ARFoundation
         /// <summary>
         /// Get or set whether high dynamic range environment textures are requested.
         /// </summary>
-        /// <value>
-        /// <see langword="true"/> if high dynamic range environment textures are requested. Otherwise, <see langword="false"/>.
-        /// </value>
+        /// <value></value>
         public bool environmentTextureHDRRequested
         {
             get => supportsEnvironmentTextureHDR ? subsystem.environmentTextureHDRRequested : m_EnvironmentTextureHDR;
@@ -85,28 +86,26 @@ namespace UnityEngine.XR.ARFoundation
         }
 
         /// <summary>
-        /// Queries whether environment textures are provided with high dynamic range (HDR).
+        /// Queries whether environment textures will be provided with high dynamic range.
         /// </summary>
-        /// <value>
-        /// <see langword="true"/> if environment textures are HDR. Otherwise, <see langword="false"/>.
-        /// </value>
-        public bool environmentTextureHDREnabled => supportsEnvironmentTextureHDR && subsystem.environmentTextureHDREnabled;
+        public bool environmentTextureHDREnabled => supportsEnvironmentTextureHDR ? subsystem.environmentTextureHDREnabled : false;
 
         /// <summary>
-        /// Specifies a debug prefab that will be attached to all environment probes.
+        /// Specifies a debug Prefab that will be attached to all environment probes.
         /// </summary>
-        /// <value>The debug prefab.</value>
+        /// <value>
+        /// A debug Prefab that will be attached to all environment probes.
+        /// </value>
         /// <remarks>
-        /// Setting a debug prefab allows for environment probes to be more readily visualized, but is not
+        /// Setting a debug Prefab allows for these environment probes to be more readily visualized but is not
         /// required for normal operation of this manager. This script will automatically create reflection probes for
-        /// all environment probes reported by the <see cref="XREnvironmentProbeSubsystem"/>.
+        /// all environment probes reported by the <c>XREnvironmentProbeSubsystem</c>.
         /// </remarks>
         public GameObject debugPrefab
         {
             get => m_DebugPrefab;
             set => m_DebugPrefab = value;
         }
-
         [SerializeField]
         [Tooltip("A debug prefab that allows for these environment probes to be more readily visualized.")]
         GameObject m_DebugPrefab;
@@ -178,18 +177,18 @@ namespace UnityEngine.XR.ARFoundation
 
             var desc = descriptor;
 
-            if (probe.placementType == AREnvironmentProbePlacementType.Manual && !desc.supportsRemovalOfManual)
+            if ((probe.placementType == AREnvironmentProbePlacementType.Manual) && !desc.supportsRemovalOfManual)
                 throw new InvalidOperationException("Removal of manually placed environment probes is not supported by this subsystem.");
 
-            if (probe.placementType == AREnvironmentProbePlacementType.Automatic && !desc.supportsRemovalOfAutomatic)
+            if ((probe.placementType == AREnvironmentProbePlacementType.Automatic) && !desc.supportsRemovalOfAutomatic)
                 throw new InvalidOperationException("Removal of automatically placed environment probes is not supported by this subsystem.");
 
             if (subsystem.RemoveEnvironmentProbe(probe.trackableId))
             {
+                m_Trackables.Remove(probe.trackableId);
                 if (m_PendingAdds.ContainsKey(probe.trackableId))
                 {
                     m_PendingAdds.Remove(probe.trackableId);
-                    m_Trackables.Remove(probe.trackableId);
                 }
 
                 probe.pending = false;
